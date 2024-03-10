@@ -1,4 +1,4 @@
-# DJlivery-jogo#
+# DJlivery-jogo
 
 DJlivery é um jovem que a noite é DJ e pelas manhã trabalha entregando delivery em sua bike. Ajude DJlivery nas suas entregas desviando os obstáculos!
 
@@ -31,19 +31,23 @@ Apesar disso, a fase corrida possui 3 ciclos basicamente:
 ## Esquema de Pontuação
 
 O jogo possuirá basicamente dois sistemas de pontuação:
+
   1 - Por mob acertado: 
     A ideia que o personagem principal fique centrado ou se mexendo e os obstáculos que aparecerem sejam retirados quando o jogador clica antes de acertar o DJlivery, dessa maneira, cada obstáculo vai somar uma quantidade de pontos: 
-      Exemplo de pontuação (Ideia inicial): 
-        Obstáculos dinâmicos (vão em direção ao personagem): 
-          Cachorro: 20 pontos;
-          Mulher com carinho de bebê: 10 pontos;
-          Idoso: 10 pontos;
-          Carros: 30 pontos;
-        Obstáculos fixos (personagem vai em direção):
-          Gato: 10 pontos;
-          Cone: 10 pontos;
-          Carrinho de comida: 10 pontos;
-   1 - Por sequência digitada: 
+    
+      - Exemplo de pontuação (Ideia inicial): 
+      
+        - Obstáculos dinâmicos (vão em direção ao personagem): 
+           - Cachorro: 20 pontos;
+           - Mulher com carinho de bebê: 10 pontos;
+           - Idoso: 10 pontos;
+           - Carros: 30 pontos;
+        - Obstáculos fixos (personagem vai em direção):
+           - Gato: 10 pontos;
+           - Cone: 10 pontos;
+           - Carrinho de comida: 10 pontos;
+           
+   2 - Por sequência digitada: 
         A ideia é quando passar X tempo vai aparecer 3 sequências (A, W, S e D) para ele clicar, valendo 50 pontos, inicialmente com o tempo de 10 segundos em cada e quanto mais dificil for ficando diminuindo: 10 segundos, 8 segundos, 5 segundos e 3 segundos. Pode ser feito também uma extra se der tempo, valendo 100 pontos (se der tempo de fazer).
 
 ## Requisitos
