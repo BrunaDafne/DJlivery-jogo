@@ -1,6 +1,9 @@
 import 'phaser';
 import { BootScene } from '@scenes/BootScene';
 import { TelaInicial } from '@scenes/TelaInicial';
+import { Tutorial } from '@scenes/Tutorial';
+import { Placar } from '@scenes/Placar';
+import { PreInicio } from '@scenes/PreInicio';
 
 export class Game extends Phaser.Game {
   constructor(config: Phaser.Types.Core.GameConfig) {
@@ -14,7 +17,7 @@ window.addEventListener('load', () => {
     height: '100%',
     type: Phaser.AUTO,
     parent: 'game',
-    scene: [BootScene, TelaInicial],
+    scene: [BootScene, TelaInicial, Tutorial, Placar, PreInicio],
     input: {
       keyboard: true,
     },
