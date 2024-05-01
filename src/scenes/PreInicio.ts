@@ -30,7 +30,7 @@ export class PreInicio extends Phaser.Scene {
     botaoComecar.displayHeight = 45;
 
     botaoComecar.setInteractive();
-    botaoComecar.on('pointerdown', () => this.scene.start('TelaInicial'));
+    botaoComecar.on('pointerdown', () => this.scene.start('Fase'));
 
     const botaoVoltar = this.add.image(posicaoXBotao - 170, posicaoYBotao, 'botaoVoltar.png');
     botaoVoltar.setOrigin(0);
