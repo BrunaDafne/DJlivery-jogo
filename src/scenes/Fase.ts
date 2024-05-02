@@ -24,7 +24,8 @@ export class Fase extends Phaser.Scene {
     backgroundImage.displayWidth = larguraTela;
     backgroundImage.displayHeight = alturaTela;
 
-    this.physics.world.setBounds(0, 0, larguraTela, alturaTela);
+    // Definir os limites do mundo, onde ele não vai deixar ultrapassar nem dos lados e nem embaixo
+    this.physics.world.setBounds(0, 0, larguraTela, alturaTela, true, true, false, false);
 
     let larguraBotao = larguraTela / 2 - 85;
     let alturaBotao = alturaTela / 2 + 160;
@@ -75,6 +76,8 @@ export class Fase extends Phaser.Scene {
     });
 
     this.cursors = this.input.keyboard.createCursorKeys();
+    this.cameras.main.startFollow(this.jogador);
+    this.cameras.main.setBounds(0,undefined,larguraTela, undefined);
   }
 
   preload(): void {
@@ -120,10 +123,5 @@ export class Fase extends Phaser.Scene {
         {
             this.jogador.setVelocityY(0);
         }
-      
-      // if (this.cursors.up.isDown && this.jogador.body.touching.down)
-      // {
-      //     this.jogador.setVelocityY(-330);
-      // }
   }
 }
