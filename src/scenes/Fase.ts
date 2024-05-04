@@ -5,7 +5,7 @@ import djLiveryImg from '@assets/telaFase/djlivery.png';
 export class Fase extends Phaser.Scene {
   private jogador: Phaser.Physics.Arcade.Sprite;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-  private backgroundImage!: Phaser.Physics.Arcade.Image;
+  private bg!: Phaser.GameObjects.TileSprite;
 
   constructor() {
     super({ key: 'Fase' }); 
@@ -14,23 +14,11 @@ export class Fase extends Phaser.Scene {
   init(): void {}
 
   create(): void {
+    const {width, height} = this.scale;
+    // adiciona o fundo
+    this.bg = this.add.tileSprite(0,0, width, height, 'background').setScale(2);
     const larguraTela = this.sys.canvas.width;
     const alturaTela = this.sys.canvas.height;
-    // Adiciona a imagem de fundo que ocupa toda a tela
-    this.backgroundImage = this.physics.add.image(larguraTela / 2, alturaTela / 2, 'telaPlacar.png');
-    // Centraliza a imagem na tela
-    this.backgroundImage.setOrigin(0.5, 0.5);
-
-    // Define as dimensões da imagem para preencher toda a tela
-    this.backgroundImage.displayWidth = larguraTela;
-    this.backgroundImage.displayHeight = alturaTela;
-
-    this.tweens.add({
-      targets: this.backgroundImage,
-      y: alturaTela,
-      duration: 30000, // Ajuste esse valor para controlar a velocidade de descida do fundo
-      repeat: -1
-    });
 
     // Definir os limites do mundo, onde ele não vai deixar ultrapassar nem dos lados e nem embaixo
     this.physics.world.setBounds(0, 0, larguraTela, alturaTela);
@@ -73,19 +61,19 @@ export class Fase extends Phaser.Scene {
     });
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    //this.cameras.main.startFollow(this.jogador);
-    //this.cameras.main.setBounds(0,undefined,larguraTela, undefined);
   }
 
   preload(): void {
-    // Pré-carrega a imagem de fundo
-    this.load.image('telaPlacar.png', telaPlacarImg);
-
     // Pré-carrega o sprint do djlivery
     this.load.spritesheet('djLivery', djLiveryImg, { frameWidth: 32, frameHeight: 48 });
+
+    // Pré-carrega a imagem de fundo
+    this.load.image('background', telaPlacarImg);
   }
 
   update(): void {
+    // Muda a posição do fundo no eixo Y, dando a sensação de movimento
+    this.bg.tilePositionY += -0.5;
     if (this.cursors.left.isDown)
       {
           this.jogador.setVelocityX(-300);
