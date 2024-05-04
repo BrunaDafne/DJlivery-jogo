@@ -1,10 +1,11 @@
 import telaPlacarImg from '@assets/telaPlacar/telaPlacar.png';
-import botaoVoltarImg from '@assets/botoes/botaoVoltar.png';
 import djLiveryImg from '@assets/telaFase/djlivery.png';
+
 
 export class Fase extends Phaser.Scene {
   private jogador: Phaser.Physics.Arcade.Sprite;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
+  private backgroundImage!: Phaser.Physics.Arcade.Image;
 
   constructor() {
     super({ key: 'Fase' }); 
@@ -16,27 +17,23 @@ export class Fase extends Phaser.Scene {
     const larguraTela = this.sys.canvas.width;
     const alturaTela = this.sys.canvas.height;
     // Adiciona a imagem de fundo que ocupa toda a tela
-    const backgroundImage = this.add.image(0, 0, 'telaPlacar.png');
+    this.backgroundImage = this.physics.add.image(larguraTela / 2, alturaTela / 2, 'telaPlacar.png');
     // Centraliza a imagem na tela
-    backgroundImage.setOrigin(0);
+    this.backgroundImage.setOrigin(0.5, 0.5);
 
     // Define as dimensões da imagem para preencher toda a tela
-    backgroundImage.displayWidth = larguraTela;
-    backgroundImage.displayHeight = alturaTela;
+    this.backgroundImage.displayWidth = larguraTela;
+    this.backgroundImage.displayHeight = alturaTela;
+
+    this.tweens.add({
+      targets: this.backgroundImage,
+      y: alturaTela,
+      duration: 30000, // Ajuste esse valor para controlar a velocidade de descida do fundo
+      repeat: -1
+    });
 
     // Definir os limites do mundo, onde ele não vai deixar ultrapassar nem dos lados e nem embaixo
-    this.physics.world.setBounds(0, 0, larguraTela, alturaTela, true, true, false, false);
-
-    let larguraBotao = larguraTela / 2 - 85;
-    let alturaBotao = alturaTela / 2 + 160;
-
-    const botaoVoltar = this.add.image(larguraBotao, alturaBotao, 'botaoVoltar.png');
-    botaoVoltar.setOrigin(0);
-    botaoVoltar.displayWidth = 180;
-    botaoVoltar.displayHeight = 45;
-
-    botaoVoltar.setInteractive();
-    botaoVoltar.on('pointerdown', () => this.scene.start('TelaInicial'));
+    this.physics.world.setBounds(0, 0, larguraTela, alturaTela);
 
     // Aplica estilos CSS para evitar rolagem e fixar a imagem de fundo
     const gameCanvas = document.querySelector('canvas');
@@ -76,16 +73,13 @@ export class Fase extends Phaser.Scene {
     });
 
     this.cursors = this.input.keyboard.createCursorKeys();
-    this.cameras.main.startFollow(this.jogador);
-    this.cameras.main.setBounds(0,undefined,larguraTela, undefined);
+    //this.cameras.main.startFollow(this.jogador);
+    //this.cameras.main.setBounds(0,undefined,larguraTela, undefined);
   }
 
   preload(): void {
     // Pré-carrega a imagem de fundo
     this.load.image('telaPlacar.png', telaPlacarImg);
-
-    // Pré-carrega a imagem do botão voltar
-    this.load.image('botaoVoltar.png', botaoVoltarImg);
 
     // Pré-carrega o sprint do djlivery
     this.load.spritesheet('djLivery', djLiveryImg, { frameWidth: 32, frameHeight: 48 });
