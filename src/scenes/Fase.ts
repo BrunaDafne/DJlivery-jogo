@@ -8,6 +8,7 @@ export class Fase extends Phaser.Scene {
   private jogador: Phaser.Physics.Arcade.Sprite;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private bg!: Phaser.GameObjects.TileSprite;
+  private pontuacao: number = 0; // Variável para contar a pontuação do jogador
 
   private pinos: Phaser.Physics.Arcade.Image[] = [];
   private tempoProximoPino: number = 0;
@@ -172,6 +173,9 @@ export class Fase extends Phaser.Scene {
   private colisaoPino(jogador: Phaser.Physics.Arcade.Sprite, pino: Phaser.Physics.Arcade.Image): void {
     pino.destroy(); // Remove o pino colidido
     this.pinos = this.pinos.filter(p => p !== pino); // Remove o pino do array de pinos
+
+     // Incrementa a pontuação
+     this.pontuacao++;
   }
 
   // Função que fica movendo os pinos na tela
