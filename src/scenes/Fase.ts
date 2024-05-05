@@ -12,6 +12,7 @@ export class Fase extends Phaser.Scene {
   private pinos: Phaser.Physics.Arcade.Image[] = [];
   private tempoProximoPino: number = 0;
   private intervaloEntrePinos: number = 5000; // Intervalo em milissegundos para aparecer o próximo pino
+  private adicionandoPino: boolean = false; // flag que ajuda não criar vários de uma vez
 
   constructor() {
     super({ key: 'Fase' }); 
@@ -123,7 +124,8 @@ export class Fase extends Phaser.Scene {
 
     // Verifica se é hora de adicionar um novo pino e se o array ta
     // vazio para adicionar apenas um por vez
-    if (this.tempoProximoPino < this.time.now && this.pinos.length === 0) {
+    // ainda verifica a flag
+    if (this.pinos.length === 0 && this.tempoProximoPino < this.time.now && this.adicionandoPino === false) {
       this.adicionarPino();
       this.tempoProximoPino = this.time.now + this.intervaloEntrePinos;
     }
@@ -138,6 +140,15 @@ export class Fase extends Phaser.Scene {
 
   // Essa função adiciona o pino
   private adicionarPino(): void {
+    // Impede que outra chamada a essa função seja feita enquanto uma estiver em andamento
+    if (this.adicionandoPino) {
+      return;
+    }
+
+    // Vai iniciar a adição, então ele bloqueia caso tente adicionar outras
+    // enquanto ele está adicionando uma
+    this.adicionandoPino = true;
+
     // escolhe um lado para adicionar o pino e coloca as coordenadas x e y
     const lado = Phaser.Math.Between(0, 1); // 0 para esquerda, 1 para direita
     const x = lado === 0 ? 50 : this.sys.canvas.width - 50;
@@ -150,23 +161,33 @@ export class Fase extends Phaser.Scene {
     pino.setVelocityY(-0.5 * this.bg.tilePositionY); // Define a mesma velocidade do fundo
     // adiciona na variavel
     this.pinos.push(pino);
+
+    // Define um pequeno atraso antes de permitir outra chamada à função
+    this.time.delayedCall(500, () => {
+      this.adicionandoPino = false;
+    }, [], this);
   }
 
   // Função que faz a logica de colisão com o jogador
   private colisaoPino(jogador: Phaser.Physics.Arcade.Sprite, pino: Phaser.Physics.Arcade.Image): void {
     pino.destroy(); // Remove o pino colidido
     this.pinos = this.pinos.filter(p => p !== pino); // Remove o pino do array de pinos
-
-    // Adiciona um novo pino após um tempo de espera
-    this.time.delayedCall(2000, this.adicionarPino, [], this);
   }
 
   // Função que fica movendo os pinos na tela
   private movePinos(): void {
     // Move cada pino na tela
-    this.pinos.forEach(pino => {
+    this.pinos.forEach((pino, index) => {
       //pino.y += velocidadePinos;
       pino.setVelocityY(100);
+
+      // Verifica se o pino tá fora da altura da tela
+      // isso significa que o pino passou direto então
+      // ele pode tirar dentro do array
+      if (pino.y > this.sys.canvas.height) {
+        pino.destroy(); // Remove o pino
+        this.pinos.splice(index, 1); // Remove o pino do array
+      }
     });
   }
 }
