@@ -1,11 +1,17 @@
 import telaPlacarImg from '@assets/telaPlacar/telaPlacar.png';
 import djLiveryImg from '@assets/telaFase/djlivery.png';
-
+import pinAmareloImg from '@assets/telaFase/colisao/pinamarelo.png';
+import pinVermelhoImg from '@assets/telaFase/colisao/pinvermelho.png';
+import pinAzulImg from '@assets/telaFase/colisao/pinazul.png';
 
 export class Fase extends Phaser.Scene {
   private jogador: Phaser.Physics.Arcade.Sprite;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private bg!: Phaser.GameObjects.TileSprite;
+
+  private pinos: Phaser.Physics.Arcade.Image[] = [];
+  private tempoProximoPino: number = 0;
+  private intervaloEntrePinos: number = 5000; // Intervalo em milissegundos para aparecer o próximo pino
 
   constructor() {
     super({ key: 'Fase' }); 
@@ -69,6 +75,15 @@ export class Fase extends Phaser.Scene {
 
     // Pré-carrega a imagem de fundo
     this.load.image('background', telaPlacarImg);
+
+    // Pré-carrega pin Amarelo
+    this.load.image('pinAmareloImg', pinAmareloImg);
+
+    // Pré-carrega pin Vermelho
+    this.load.image('pinVermelhoImg', pinVermelhoImg);
+
+    // Pré-carrega pin Azul
+    this.load.image('pinAzulImg', pinAzulImg);
   }
 
   update(): void {
@@ -105,5 +120,53 @@ export class Fase extends Phaser.Scene {
         {
             this.jogador.setVelocityY(0);
         }
+
+    // Verifica se é hora de adicionar um novo pino e se o array ta
+    // vazio para adicionar apenas um por vez
+    if (this.tempoProximoPino < this.time.now && this.pinos.length === 0) {
+      this.adicionarPino();
+      this.tempoProximoPino = this.time.now + this.intervaloEntrePinos;
+    }
+
+    // Chama a função que fica movendo os pinos
+    this.movePinos();
+
+     // Verifica a colisão entre o jogador e os pinos, coloquei aqui porque se eu colocasse
+     // apenas no create, ele ia colidir apenas no primeiro, ele precisa ficar verificando
+     this.physics.world.collide(this.jogador, this.pinos, this.colisaoPino, null, this);
+  }
+
+  // Essa função adiciona o pino
+  private adicionarPino(): void {
+    // escolhe um lado para adicionar o pino e coloca as coordenadas x e y
+    const lado = Phaser.Math.Between(0, 1); // 0 para esquerda, 1 para direita
+    const x = lado === 0 ? 50 : this.sys.canvas.width - 50;
+    const y = 0;
+    // escolhe um dos pinos
+    const tipoPino = Phaser.Math.Between(0, 2); // 0 para amarelo, 1 para vermelho, 2 para azul
+
+    // adiciona as coordenadas e a imagem que escolheu
+    const pino = this.physics.add.image(x, y, ['pinAmareloImg', 'pinVermelhoImg', 'pinAzulImg'][tipoPino]);
+    pino.setVelocityY(-0.5 * this.bg.tilePositionY); // Define a mesma velocidade do fundo
+    // adiciona na variavel
+    this.pinos.push(pino);
+  }
+
+  // Função que faz a logica de colisão com o jogador
+  private colisaoPino(jogador: Phaser.Physics.Arcade.Sprite, pino: Phaser.Physics.Arcade.Image): void {
+    pino.destroy(); // Remove o pino colidido
+    this.pinos = this.pinos.filter(p => p !== pino); // Remove o pino do array de pinos
+
+    // Adiciona um novo pino após um tempo de espera
+    this.time.delayedCall(2000, this.adicionarPino, [], this);
+  }
+
+  // Função que fica movendo os pinos na tela
+  private movePinos(): void {
+    // Move cada pino na tela
+    this.pinos.forEach(pino => {
+      //pino.y += velocidadePinos;
+      pino.setVelocityY(100);
+    });
   }
 }
