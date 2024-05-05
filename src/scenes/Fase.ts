@@ -3,12 +3,14 @@ import djLiveryImg from '@assets/telaFase/djlivery.png';
 import pinAmareloImg from '@assets/telaFase/colisao/pinamarelo.png';
 import pinVermelhoImg from '@assets/telaFase/colisao/pinvermelho.png';
 import pinAzulImg from '@assets/telaFase/colisao/pinazul.png';
+import { Modal } from '@objects/Modal';
 
 export class Fase extends Phaser.Scene {
   private jogador: Phaser.Physics.Arcade.Sprite;
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys;
   private bg!: Phaser.GameObjects.TileSprite;
   private pontuacao: number = 0; // Variável para contar a pontuação do jogador
+  private vidas: number = 3; // Variável que conta as vidas do jogador
 
   private pinos: Phaser.Physics.Arcade.Image[] = [];
   private tempoProximoPino: number = 0;
@@ -86,6 +88,9 @@ export class Fase extends Phaser.Scene {
 
     // Pré-carrega pin Azul
     this.load.image('pinAzulImg', pinAzulImg);
+
+    // Pré-carrega a imagem de fundo do modal de acabar o jogo
+    this.load.image('imagemFundoModal', telaPlacarImg);
   }
 
   update(): void {
@@ -125,8 +130,8 @@ export class Fase extends Phaser.Scene {
 
     // Verifica se é hora de adicionar um novo pino e se o array ta
     // vazio para adicionar apenas um por vez
-    // ainda verifica a flag
-    if (this.pinos.length === 0 && this.tempoProximoPino < this.time.now && this.adicionandoPino === false) {
+    // ainda verifica a flag de adicionandoPino e verifica se o jogo não acabou
+    if (this.pinos.length === 0 && this.tempoProximoPino < this.time.now && this.adicionandoPino === false && this.vidas > 0) {
       this.adicionarPino();
       this.tempoProximoPino = this.time.now + this.intervaloEntrePinos;
     }
@@ -191,7 +196,34 @@ export class Fase extends Phaser.Scene {
       if (pino.y > this.sys.canvas.height) {
         pino.destroy(); // Remove o pino
         this.pinos.splice(index, 1); // Remove o pino do array
+        // Perde uma vida, caso o marcador passe direto
+        this.vidas--;
+
+        // Verifica se todas as vidas foram perdidas
+        if (this.vidas === 0) {
+          // Exibe o modal com a pontuação final
+          this.mostrarModal();
+        }
       }
     });
+  }
+
+  private mostrarModal(): void {
+    // Função de callback para reiniciar a fase
+    const reiniciarFase = () => {
+      // Reinicia as variáveis de pontuação e vidas
+      this.pontuacao = 0;
+      this.vidas = 3;
+
+    // Remove todos os pinos restantes
+      this.pinos.forEach(pino => pino.destroy());
+      this.pinos = [];
+
+      // Fecha o modal
+      modal.destroy();
+    };
+
+    // Cria uma instância do modal e passa a pontuação final
+    const modal = new Modal(this, this.pontuacao, reiniciarFase);
   }
 }
