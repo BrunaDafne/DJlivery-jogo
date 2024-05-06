@@ -1,8 +1,10 @@
 import telaPlacarImg from '@assets/telaPlacar/telaPlacar.png';
+import fundoFaseImg from '@assets/telaFase/fundoFase.png';
 import djLiveryImg from '@assets/telaFase/djlivery.png';
 import pinAmareloImg from '@assets/telaFase/colisao/pinamarelo.png';
 import pinVermelhoImg from '@assets/telaFase/colisao/pinvermelho.png';
 import pinAzulImg from '@assets/telaFase/colisao/pinazul.png';
+import carroImg from '@assets/telaFase/colisao/carro.png';
 import { Modal } from '@objects/Modal';
 
 export class Fase extends Phaser.Scene {
@@ -11,6 +13,7 @@ export class Fase extends Phaser.Scene {
   private bg!: Phaser.GameObjects.TileSprite;
   private pontuacao: number = 0; // Variável para contar a pontuação do jogador
   private vidas: number = 3; // Variável que conta as vidas do jogador
+  private carros: Phaser.Physics.Arcade.Image[] = []; // guarda os carros
 
   private pinos: Phaser.Physics.Arcade.Image[] = [];
   private tempoProximoPino: number = 0;
@@ -78,7 +81,7 @@ export class Fase extends Phaser.Scene {
     this.load.spritesheet('djLivery', djLiveryImg, { frameWidth: 32, frameHeight: 48 });
 
     // Pré-carrega a imagem de fundo
-    this.load.image('background', telaPlacarImg);
+    this.load.image('background', fundoFaseImg);
 
     // Pré-carrega pin Amarelo
     this.load.image('pinAmareloImg', pinAmareloImg);
@@ -91,6 +94,9 @@ export class Fase extends Phaser.Scene {
 
     // Pré-carrega a imagem de fundo do modal de acabar o jogo
     this.load.image('imagemFundoModal', telaPlacarImg);
+
+    // Pré-carrega a imagem do carro
+    this.load.image('carroImg', carroImg);
   }
 
   update(): void {
@@ -142,6 +148,29 @@ export class Fase extends Phaser.Scene {
      // Verifica a colisão entre o jogador e os pinos, coloquei aqui porque se eu colocasse
      // apenas no create, ele ia colidir apenas no primeiro, ele precisa ficar verificando
      this.physics.world.collide(this.jogador, this.pinos, this.colisaoPino, null, this);
+
+     // Adicionando carros, no maximo dois quando ele ja tiver entregue 3 e nao ter 
+     // zerado a vida
+     if (this.carros.length < 2 && this.pontuacao >= 3 && this.vidas > 0) {
+        // faz a logica para ver e qual lado vai nascer os carros da pista
+        let x;
+        if (this.carros.length === 1) {
+          x = this.carros[0].x === this.sys.canvas.width * 0.43 ? this.sys.canvas.width * 0.60 : this.sys.canvas.width * 0.43
+        } else {
+          x = Phaser.Math.Between(this.sys.canvas.width * 0.43, this.sys.canvas.width * 0.60);
+        }
+        const y = this.sys.canvas.height;
+
+        const carro = this.physics.add.image(x, y, 'carroImg');
+        this.carros.push(carro);
+     }
+
+    // Move os carros na tela e verifica colisões
+    this.moveCarros();
+    this.physics.world.collide(this.jogador, this.carros, this.colisaoCarro, null, this);
+
+    // Atualiza o movimento do jogador
+    this.updatePlayerMovement();
   }
 
   // Essa função adiciona o pino
@@ -208,6 +237,100 @@ export class Fase extends Phaser.Scene {
     });
   }
 
+  // Função que move os carros
+  private moveCarros(): void {
+    // Move cada carro na tela
+    this.carros.forEach((carro, index) => {
+      // Coloca velocidade diferentes para os veículos
+      if (index !== 0) {
+        carro.setVelocityY(-200);
+      } else {
+        carro.setVelocityY(-100);
+      }
+        // Verifica se o carro saiu da tela, remove-o do array nesse caso
+        if (carro.y < -carro.height) {
+            carro.destroy();
+            this.carros.splice(index, 1);
+        }
+    });
+  }
+
+  // Colisão jogador e carro
+  private colisaoCarro(jogador: Phaser.Physics.Arcade.Sprite, carro: Phaser.Physics.Arcade.Image): void {
+    // Desativa temporariamente a colisão do jogador com o carro
+    this.jogador.body.enable = false;
+
+   // Verifica se o corpo do carro é do tipo Body (o que tem a propriedade moves)
+   if (carro.body instanceof Phaser.Physics.Arcade.Body) {
+    // Congela a posição do carro durante o período de colisão
+    carro.body.moves = false;
+  }
+
+    // Configura um temporizador para reativar a colisão após 3 segundos
+    this.time.delayedCall(3000, () => {
+        // Reativa a colisão do jogador com o carro
+        this.jogador.body.enable = true;
+        
+        // Verifica se o corpo do carro é do tipo Body e descongela a posição, se for
+        if (carro.body instanceof Phaser.Physics.Arcade.Body) {
+          carro.body.moves = true;
+       }
+    }, [], this);
+
+    // Configura um temporizador para fazer o jogador piscar durante o período de colisão
+    const timer = this.time.addEvent({
+        delay: 200, // tempo entre cada piscada
+        callback: () => {
+            // Alterna a visibilidade do jogador
+            this.jogador.visible = !this.jogador.visible;
+        },
+        callbackScope: this,
+        repeat: 100 // número de piscadas
+    });
+
+    // Configura um temporizador para parar o efeito de piscar e restaurar a visibilidade do jogador
+    this.time.delayedCall(3000, () => {
+        // Cancela o temporizador de piscar e restaura a visibilidade do jogador
+        timer.remove(false);
+        this.jogador.visible = true;
+    }, [], this);
+
+    // Decrementa uma vida
+    this.vidas--;
+
+    // Verifica se todas as vidas foram perdidas
+    if (this.vidas === 0) {
+        // Exibe o modal com a pontuação final
+        this.mostrarModal();
+    }
+}
+
+  // Atualiza o movimento dos jogadores
+  private updatePlayerMovement(): void {
+    // Verifica se a colisão do jogador com o carro está ativa
+    if (this.jogador.body.enable) {
+        // Atualiza o movimento do jogador apenas se a colisão estiver ativada
+        if (this.cursors.left.isDown) {
+            this.jogador.setVelocityX(-300);
+            this.jogador.anims.play('left', true);
+        } else if (this.cursors.right.isDown) {
+            this.jogador.setVelocityX(300);
+            this.jogador.anims.play('right', true);
+        } else {
+            this.jogador.setVelocityX(0);
+            this.jogador.anims.play('turn');
+        }
+
+        if (this.cursors.up.isDown) {
+            this.jogador.setVelocityY(-300);
+        } else if (this.cursors.down.isDown) {
+            this.jogador.setVelocityY(300);
+        } else {
+            this.jogador.setVelocityY(0);
+        }
+    }
+}
+
   private mostrarModal(): void {
     // Função de callback para reiniciar a fase
     const reiniciarFase = () => {
@@ -215,9 +338,13 @@ export class Fase extends Phaser.Scene {
       this.pontuacao = 0;
       this.vidas = 3;
 
-    // Remove todos os pinos restantes
+      // Remove todos os pinos restantes
       this.pinos.forEach(pino => pino.destroy());
       this.pinos = [];
+
+      // Remove todos os carros restantes
+      this.carros.forEach(carro => carro.destroy());
+      this.carros = [];
 
       // Fecha o modal
       modal.destroy();
