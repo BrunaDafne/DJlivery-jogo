@@ -338,6 +338,11 @@ export class Fase extends Phaser.Scene {
       this.pontuacao = 0;
       this.vidas = 3;
 
+      // Volta o jogador para o estado inicial quando reiniciar a fase
+      this.jogador.visible = true;
+      this.jogador.body.enable = true;
+      this.jogador.setPosition(this.sys.canvas.width / 2,  this.sys.canvas.height / 2);
+
       // Remove todos os pinos restantes
       this.pinos.forEach(pino => pino.destroy());
       this.pinos = [];
