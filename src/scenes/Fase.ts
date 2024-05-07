@@ -257,35 +257,28 @@ export class Fase extends Phaser.Scene {
 
   // Colisão jogador e carro
   private colisaoCarro(jogador: Phaser.Physics.Arcade.Sprite, carro: Phaser.Physics.Arcade.Image): void {
-    // Desativa temporariamente a colisão do jogador com o carro
-    this.jogador.body.enable = false;
-
-   // Verifica se o corpo do carro é do tipo Body (o que tem a propriedade moves)
-   if (carro.body instanceof Phaser.Physics.Arcade.Body) {
-    // Congela a posição do carro durante o período de colisão
-    carro.body.moves = false;
-  }
+    // Decrementa uma vida
+    this.vidas--;
+    // Desativa o corpo do carro
+    carro.body.enable = false;
 
     // Configura um temporizador para reativar a colisão após 3 segundos
     this.time.delayedCall(3000, () => {
-        // Reativa a colisão do jogador com o carro
-        this.jogador.body.enable = true;
-        
-        // Verifica se o corpo do carro é do tipo Body e descongela a posição, se for
         if (carro.body instanceof Phaser.Physics.Arcade.Body) {
-          carro.body.moves = true;
-       }
+          // Depois de 3 segundos, reativa o corpo do carro
+          carro.body.enable = true;
+        }
     }, [], this);
 
     // Configura um temporizador para fazer o jogador piscar durante o período de colisão
     const timer = this.time.addEvent({
-        delay: 200, // tempo entre cada piscada
+        delay: 50, // tempo entre cada piscada
         callback: () => {
             // Alterna a visibilidade do jogador
             this.jogador.visible = !this.jogador.visible;
         },
         callbackScope: this,
-        repeat: 100 // número de piscadas
+        repeat: 5000 // número de piscadas
     });
 
     // Configura um temporizador para parar o efeito de piscar e restaurar a visibilidade do jogador
@@ -294,9 +287,6 @@ export class Fase extends Phaser.Scene {
         timer.remove(false);
         this.jogador.visible = true;
     }, [], this);
-
-    // Decrementa uma vida
-    this.vidas--;
 
     // Verifica se todas as vidas foram perdidas
     if (this.vidas === 0) {
@@ -308,7 +298,6 @@ export class Fase extends Phaser.Scene {
   // Atualiza o movimento dos jogadores
   private updatePlayerMovement(): void {
     // Verifica se a colisão do jogador com o carro está ativa
-    if (this.jogador.body.enable) {
         // Atualiza o movimento do jogador apenas se a colisão estiver ativada
         if (this.cursors.left.isDown) {
             this.jogador.setVelocityX(-300);
@@ -328,7 +317,6 @@ export class Fase extends Phaser.Scene {
         } else {
             this.jogador.setVelocityY(0);
         }
-    }
 }
 
   private mostrarModal(): void {
@@ -340,7 +328,6 @@ export class Fase extends Phaser.Scene {
 
       // Volta o jogador para o estado inicial quando reiniciar a fase
       this.jogador.visible = true;
-      this.jogador.body.enable = true;
       this.jogador.setPosition(this.sys.canvas.width / 2,  this.sys.canvas.height / 2);
 
       // Remove todos os pinos restantes
