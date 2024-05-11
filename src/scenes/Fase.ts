@@ -259,12 +259,25 @@ export class Fase extends Phaser.Scene {
   private colisaoCarro(jogador: Phaser.Physics.Arcade.Sprite, carro: Phaser.Physics.Arcade.Image): void {
     // Decrementa uma vida
     this.vidas--;
+    // Retira a velocidade do carro, para ele não sofrer com a inércia
+    carro.setVelocity(0);
+
     // Desativa o corpo do carro
     carro.body.enable = false;
+
+     // Salva a posição e a velocidade original do carro
+     const originalPosition = { x: carro.x, y: carro.y };
+     const originalVelocity = { x: carro.body.velocity.x, y: carro.body.velocity.y };
 
     // Configura um temporizador para reativar a colisão após 3 segundos
     this.time.delayedCall(3000, () => {
         if (carro.body instanceof Phaser.Physics.Arcade.Body) {
+          // Restaura a posição original do carro
+          carro.setPosition(originalPosition.x, originalPosition.y);
+
+          // Restaura a velocidade original do carro
+          carro.setVelocity(originalVelocity.x, originalVelocity.y);
+
           // Depois de 3 segundos, reativa o corpo do carro
           carro.body.enable = true;
         }
