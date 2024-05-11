@@ -151,13 +151,17 @@ export class Fase extends Phaser.Scene {
 
      // Adicionando carros, no maximo dois quando ele ja tiver entregue 3 e nao ter 
      // zerado a vida
-     if (this.carros.length < 2 && this.pontuacao >= 3 && this.vidas > 0) {
+     if (
+      this.carros.length < 2 
+      && this.pontuacao >= 3 
+      && this.vidas > 0
+    ) {
         // faz a logica para ver e qual lado vai nascer os carros da pista
         let x;
         if (this.carros.length === 1) {
           x = this.carros[0].x === this.sys.canvas.width * 0.43 ? this.sys.canvas.width * 0.60 : this.sys.canvas.width * 0.43
         } else {
-          x = Phaser.Math.Between(this.sys.canvas.width * 0.43, this.sys.canvas.width * 0.60);
+          x = this.sys.canvas.width * 0.60;
         }
         const y = this.sys.canvas.height;
 
