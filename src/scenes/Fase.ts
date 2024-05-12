@@ -5,6 +5,12 @@ import pinAmareloImg from '@assets/telaFase/colisao/pinamarelo.png';
 import pinVermelhoImg from '@assets/telaFase/colisao/pinvermelho.png';
 import pinAzulImg from '@assets/telaFase/colisao/pinazul.png';
 import carroImg from '@assets/telaFase/colisao/carro.png';
+
+import cachorroImg from '@assets/telaFase/colisao/cachorro.png';
+import criancaImg from '@assets/telaFase/colisao/crianca.png';
+import idosoImg from '@assets/telaFase/colisao/idoso.png';
+import maeImg from '@assets/telaFase/colisao/mae.png';
+
 import { Modal } from '@objects/Modal';
 
 export class Fase extends Phaser.Scene {
@@ -20,6 +26,10 @@ export class Fase extends Phaser.Scene {
   private intervaloEntrePinos: number = 5000; // Intervalo em milissegundos para aparecer o próximo pino
   private adicionandoPino: boolean = false; // flag que ajuda não criar vários de uma vez
 
+  private elementos: Phaser.Physics.Arcade.Image[] = []; // Declaração da variável elementos de colisão
+  private adicionandoElemento: boolean = false; // flag que ajuda não criar vários de uma vez 
+  private posicoesX: number[] = [];
+
   constructor() {
     super({ key: 'Fase' }); 
   }
@@ -32,6 +42,7 @@ export class Fase extends Phaser.Scene {
     this.bg = this.add.tileSprite(0,0, width, height, 'background').setScale(2);
     const larguraTela = this.sys.canvas.width;
     const alturaTela = this.sys.canvas.height;
+    this.posicoesX = [0.13  * this.sys.canvas.width, 0.3  * this.sys.canvas.width, 0.73  * this.sys.canvas.width, 0.88  * this.sys.canvas.width];
 
     // Definir os limites do mundo, onde ele não vai deixar ultrapassar nem dos lados e nem embaixo
     this.physics.world.setBounds(0, 0, larguraTela, alturaTela);
@@ -97,6 +108,18 @@ export class Fase extends Phaser.Scene {
 
     // Pré-carrega a imagem do carro
     this.load.image('carroImg', carroImg);
+
+    // Pré-carrega a imagem do cachorro
+    this.load.image('cachorroImg', cachorroImg);
+
+    // Pré-carrega a imagem do crianca
+    this.load.image('criancaImg', criancaImg);
+
+    // Pré-carrega a imagem do idoso
+    this.load.image('idosoImg', idosoImg);
+
+    // Pré-carrega a imagem do mãe
+    this.load.image('maeImg', maeImg);
   }
 
   update(): void {
@@ -175,6 +198,18 @@ export class Fase extends Phaser.Scene {
 
     // Atualiza o movimento do jogador
     this.updatePlayerMovement();
+
+    // Adiciona um novo colisor se o array estiver vazio e a vida do jogador for maior que zero
+   if (this.pontuacao > 7 && this.elementos.length < 4 && this.vidas > 0 && this.posicoesX.length > 0) {
+    this.adicionarElemento();
+   }
+
+    // Move os elementos na tela
+    this.moveElementos();
+
+    // Verifica a colisão entre o jogador e os elementos
+    this.physics.world.collide(this.jogador, this.elementos, this.colisaoElemento, null, this);
+
   }
 
   // Essa função adiciona o pino
@@ -206,6 +241,39 @@ export class Fase extends Phaser.Scene {
       this.adicionandoPino = false;
     }, [], this);
   }
+
+  // Adicionar os colisores
+  private adicionarElemento(): void {
+    // Impede que outra chamada a esse método seja feita enquanto uma estiver em andamento
+    if (this.adicionandoElemento) {
+      return;
+    }
+  
+    // Inicia a adição do elemento
+    this.adicionandoElemento = true;
+  
+    // Escolhe aleatoriamente o tipo de elemento a ser adicionado
+    const tipoElemento = Phaser.Math.Between(0, 3); // 0 para cachorro, 1 para idoso, 2 para criança, 3 para mãe
+  
+    // Escolhe aleatoriamente a posicao x do elemento
+    const tipoPosicaoX = Phaser.Math.Between(0, (this.posicoesX.length - 1));
+
+    const posicaoX = this.posicoesX[tipoPosicaoX];
+    this.posicoesX.splice(tipoPosicaoX, 1);
+  
+    // Adiciona o elemento na tela de acordo com o tipo escolhido
+    const elemento = this.physics.add.image(posicaoX, 0, ['cachorroImg', 'idosoImg', 'criancaImg', 'maeImg'][tipoElemento]);
+    elemento.setVelocityY(-0.5 * this.bg.tilePositionY); // Define a mesma velocidade do fundo
+  
+    // Adiciona o elemento ao array de elementos
+    this.elementos.push(elemento);
+  
+    // Define um pequeno atraso antes de permitir outra chamada ao método
+    this.time.delayedCall(500, () => {
+      this.adicionandoElemento = false;
+    }, [], this);
+  }
+  
 
   // Função que faz a logica de colisão com o jogador
   private colisaoPino(jogador: Phaser.Physics.Arcade.Sprite, pino: Phaser.Physics.Arcade.Image): void {
@@ -241,6 +309,58 @@ export class Fase extends Phaser.Scene {
     });
   }
 
+  private colisaoElemento(jogador: Phaser.Physics.Arcade.Sprite, elemento: Phaser.Physics.Arcade.Image): void {
+    elemento.setVelocity(0);
+
+    // Desativa o corpo do elemento
+    elemento.body.enable = false;
+
+    // Salva a posição e a velocidade original do elemento
+    const originalPosition = { x: elemento.x, y: elemento.y };
+    const originalVelocity = { x: elemento.body.velocity.x, y: elemento.body.velocity.y };
+  
+    // Decrementa uma vida do jogador
+    this.vidas--;
+    
+    // Configura um temporizador para reativar a colisão após 3 segundos
+    this.time.delayedCall(3000, () => {
+      if (elemento.body instanceof Phaser.Physics.Arcade.Body) {
+        // Restaura a posição original do elemento
+        elemento.setPosition(originalPosition.x, originalPosition.y);
+
+        // Restaura a velocidade original do elemento
+        elemento.setVelocity(originalVelocity.x, originalVelocity.y);
+
+        // Depois de 3 segundos, reativa o corpo do carro
+        elemento.body.enable = true;
+      }
+   }, [], this);
+
+  // Configura um temporizador para fazer o jogador piscar durante o período de colisão
+   const timer = this.time.addEvent({
+       delay: 50, // tempo entre cada piscada
+       callback: () => {
+           // Alterna a visibilidade do elemento
+           elemento.visible = !elemento.visible;
+       },
+       callbackScope: this,
+       repeat: 5000 // número de piscadas
+   });
+
+  // Configura um temporizador para parar o efeito de piscar e restaurar a visibilidade do jogador
+  this.time.delayedCall(3000, () => {
+      // Cancela o temporizador de piscar e restaura a visibilidade do jogador
+      timer.remove(false);
+      elemento.visible = true;
+  }, [], this);
+
+    // Verifica se o jogador ainda tem vidas
+    if (this.vidas === 0) {
+      // Exibe o modal com a pontuação final
+      this.mostrarModal();
+    }
+  }  
+
   // Função que move os carros
   private moveCarros(): void {
     // Move cada carro na tela
@@ -256,6 +376,22 @@ export class Fase extends Phaser.Scene {
             carro.destroy();
             this.carros.splice(index, 1);
         }
+    });
+  }
+
+  private moveElementos(): void {
+    // Move cada colisor na tela
+    this.elementos.forEach((elemento, index) => {
+      const velocidade = Phaser.Math.Between(Phaser.Math.Between(100, 200), 300);
+      elemento.setVelocityY(velocidade); // Movimento constante para baixo
+  
+      // Verifica se o elemento saiu da tela
+      if (elemento.y > this.sys.canvas.height) {
+        const posicaoXOriginal = elemento.x;
+        this.posicoesX.push(posicaoXOriginal);
+        elemento.destroy(); // Remove o elemento
+        this.elementos.splice(index, 1); // Remove o elemento do array
+      }
     });
   }
 
@@ -291,8 +427,8 @@ export class Fase extends Phaser.Scene {
     const timer = this.time.addEvent({
         delay: 50, // tempo entre cada piscada
         callback: () => {
-            // Alterna a visibilidade do jogador
-            this.jogador.visible = !this.jogador.visible;
+            // Alterna a visibilidade do carro
+            carro.visible = !carro.visible;
         },
         callbackScope: this,
         repeat: 5000 // número de piscadas
@@ -302,7 +438,7 @@ export class Fase extends Phaser.Scene {
     this.time.delayedCall(3000, () => {
         // Cancela o temporizador de piscar e restaura a visibilidade do jogador
         timer.remove(false);
-        this.jogador.visible = true;
+        carro.visible = true;
     }, [], this);
 
     // Verifica se todas as vidas foram perdidas
@@ -354,6 +490,12 @@ export class Fase extends Phaser.Scene {
       // Remove todos os carros restantes
       this.carros.forEach(carro => carro.destroy());
       this.carros = [];
+
+      // Remove todos os elementos restantes
+      this.elementos.forEach(elemento => elemento.destroy());
+      this.elementos = [];
+
+      this.posicoesX = [0.13  * this.sys.canvas.width, 0.3  * this.sys.canvas.width, 0.73  * this.sys.canvas.width, 0.88  * this.sys.canvas.width];
 
       // Fecha o modal
       modal.destroy();
