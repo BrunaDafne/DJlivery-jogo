@@ -11,6 +11,9 @@ import criancaImg from '@assets/telaFase/colisao/crianca.png';
 import idosoImg from '@assets/telaFase/colisao/idoso.png';
 import maeImg from '@assets/telaFase/colisao/mae.png';
 
+import placarImg from '@assets/telaFase/placar.png';
+import coracaoImg from '@assets/telaFase/coracao.png';
+
 import { Modal } from '@objects/Modal';
 
 export class Fase extends Phaser.Scene {
@@ -29,6 +32,11 @@ export class Fase extends Phaser.Scene {
   private elementos: Phaser.Physics.Arcade.Image[] = []; // Declaração da variável elementos de colisão
   private adicionandoElemento: boolean = false; // flag que ajuda não criar vários de uma vez 
   private posicoesX: number[] = [];
+
+  private textoPontuacao!: Phaser.GameObjects.Text; // Texto da pontuação
+  // Declare uma variável para armazenar as referências dos corações
+  private coracoes: Phaser.GameObjects.Image[] = [];
+
 
   constructor() {
     super({ key: 'Fase' }); 
@@ -57,6 +65,16 @@ export class Fase extends Phaser.Scene {
     gameCanvas.style.left = '0';
     gameCanvas.style.overflow = 'hidden';
   
+    const placar = this.add.image((larguraTela / 2) - 85, 0, 'placarImg');
+    placar.setOrigin(0);
+
+    // Cria e exibe o texto da pontuação
+    this.textoPontuacao = this.add.text((larguraTela / 2) - 16, 18, `${this.pontuacao}`, { fontSize: '20px', color: '#000' });
+    this.textoPontuacao.setOrigin(0.5, 0); // Define a origem do texto para centralizar horizontalmente
+
+    // Cria os coracoes do placar
+    this.criarCoracoes();
+
     // Cria o jogador
     this.jogador = this.physics.add.sprite(larguraTela / 2, alturaTela / 2, 'djLivery');
 
@@ -120,6 +138,12 @@ export class Fase extends Phaser.Scene {
 
     // Pré-carrega a imagem do mãe
     this.load.image('maeImg', maeImg);
+
+    // Pré-carrega a imagem do placar
+    this.load.image('placarImg', placarImg);
+
+    // Pré-carrega a imagem do coracao que serao as vidas
+    this.load.image('coracaoImg', coracaoImg);
   }
 
   update(): void {
@@ -282,6 +306,7 @@ export class Fase extends Phaser.Scene {
 
      // Incrementa a pontuação
      this.pontuacao++;
+     this.textoPontuacao.setText(`${this.pontuacao}`);
   }
 
   // Função que fica movendo os pinos na tela
@@ -299,6 +324,7 @@ export class Fase extends Phaser.Scene {
         this.pinos.splice(index, 1); // Remove o pino do array
         // Perde uma vida, caso o marcador passe direto
         this.vidas--;
+        this.atualizarPlacarVidas();
 
         // Verifica se todas as vidas foram perdidas
         if (this.vidas === 0) {
@@ -321,6 +347,7 @@ export class Fase extends Phaser.Scene {
   
     // Decrementa uma vida do jogador
     this.vidas--;
+    this.atualizarPlacarVidas();
     
     // Configura um temporizador para reativar a colisão após 3 segundos
     this.time.delayedCall(3000, () => {
@@ -399,6 +426,7 @@ export class Fase extends Phaser.Scene {
   private colisaoCarro(jogador: Phaser.Physics.Arcade.Sprite, carro: Phaser.Physics.Arcade.Image): void {
     // Decrementa uma vida
     this.vidas--;
+    this.atualizarPlacarVidas();
     // Retira a velocidade do carro, para ele não sofrer com a inércia
     carro.setVelocity(0);
 
@@ -448,6 +476,30 @@ export class Fase extends Phaser.Scene {
     }
 }
 
+private atualizarPlacarVidas(): void {
+  // Remove todos os corações existentes no placar
+  this.removerCoracoes();
+  // Cria os novos corações
+  this.criarCoracoes();
+}
+
+private criarCoracoes(): void {
+  // Cria os corações atualizados
+  const coracaoSpacing = 20; // Espaçamento entre os corações
+  for (let i = 0; i < this.vidas; i++) {
+    const coracao = this.add.image((this.sys.canvas.width / 2 + coracaoSpacing * i) + 40, 30, 'coracaoImg');
+    // Adicione a referência do coração ao array
+    this.coracoes.push(coracao);
+  }
+}
+
+// Função para remover os corações existentes do placar
+private removerCoracoes(): void {
+  this.coracoes.forEach(coracao => coracao.destroy());
+  // Limpe o array de referências dos corações
+  this.coracoes = [];
+}
+
   // Atualiza o movimento dos jogadores
   private updatePlayerMovement(): void {
     // Verifica se a colisão do jogador com o carro está ativa
@@ -478,6 +530,8 @@ export class Fase extends Phaser.Scene {
       // Reinicia as variáveis de pontuação e vidas
       this.pontuacao = 0;
       this.vidas = 3;
+      this.textoPontuacao.setText(`${this.pontuacao}`);
+      this.criarCoracoes();
 
       // Volta o jogador para o estado inicial quando reiniciar a fase
       this.jogador.visible = true;
