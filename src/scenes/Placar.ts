@@ -1,5 +1,6 @@
 import telaPlacarImg from '@assets/telaPlacar/telaPlacar.png';
 import botaoVoltarImg from '@assets/botoes/botaoVoltar.png';
+import { getScores } from 'src/config/firebase';
 
 export class Placar extends Phaser.Scene {
   constructor() {
@@ -9,6 +10,14 @@ export class Placar extends Phaser.Scene {
   init(): void {}
 
   create(): void {
+    //console.log('process: ', process)
+    getScores().then((data: any) => {
+      console.log('deu certo');
+      console.log('valores: ', data);
+    }).catch((err: any) => {
+      console.log('DEU ERROR: ', err);
+    });
+
     const larguraTela = this.sys.canvas.width;
     const alturaTela = this.sys.canvas.height;
     // Adiciona a imagem de fundo que ocupa toda a tela

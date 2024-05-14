@@ -2,6 +2,7 @@ const path = require('path');
 const htmlPlugin = require('html-webpack-plugin');
 const copyPlugin = require('copy-webpack-plugin');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const Dotenv = require('dotenv-webpack');
 
 const htmlPluginCfg = new htmlPlugin({
   template: path.resolve(__dirname, 'index.html'),
@@ -47,7 +48,7 @@ module.exports = {
       },
     ],
   },
-  plugins: [htmlPluginCfg, copyPluginCfg],
+  plugins: [new Dotenv(), htmlPluginCfg, copyPluginCfg],
   devServer: {
     static: path.resolve(__dirname, './dist'),
     host: 'localhost',
