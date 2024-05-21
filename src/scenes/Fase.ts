@@ -107,7 +107,7 @@ export class Fase extends Phaser.Scene {
 
   preload(): void {
     // Pré-carrega o sprint do djlivery
-    this.load.spritesheet('djLivery', djLiveryImg, { frameWidth: 35, frameHeight: 85});
+    this.load.spritesheet('djLivery', djLiveryImg, { frameWidth: 55, frameHeight: 90});
 
     // Pré-carrega a imagem de fundo
     this.load.image('background', fundoFaseImg);
