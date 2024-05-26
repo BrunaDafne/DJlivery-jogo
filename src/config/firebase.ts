@@ -34,9 +34,8 @@ export async function getScores() {
 export async function addScore(name: any, score: any) {
     try {
       await addDoc(collection(db, 'placar'), { nome: name, pontuacao: score });
-      console.log("Score adicionado com sucesso!");
     } catch (error) {
-      console.error("Erro ao adicionar score: ", error);
+      alert('Ocorreu um erro ao salvar sua pontuação.');
     }
   }
 

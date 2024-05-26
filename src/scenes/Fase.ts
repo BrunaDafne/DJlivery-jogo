@@ -1,6 +1,9 @@
-import telaPlacarImg from '@assets/telaPlacar/telaPlacar.png';
+import telaGameoverImg from '@assets/telaFase/gameover/gameoverFundo.png';
 import fundoFaseImg from '@assets/telaFase/fundoFase.png';
 import djLiveryImg from '@assets/telaFase/djlivery.png';
+import botaoInicioImg from '@assets/botoes/botaoInicio.png';
+import botaoSalvarImg from '@assets/botoes/botaoSalvar.png';
+import botaoReiniciarImg from '@assets/botoes/botaoReiniciar.png';
 import pinAmareloImg from '@assets/telaFase/colisao/pinamarelo.png';
 import pinVermelhoImg from '@assets/telaFase/colisao/pinvermelho.png';
 import pinAzulImg from '@assets/telaFase/colisao/pinazul.png';
@@ -124,7 +127,12 @@ export class Fase extends Phaser.Scene {
     this.load.image('pinAzulImg', pinAzulImg);
 
     // Pré-carrega a imagem de fundo do modal de acabar o jogo
-    this.load.image('imagemFundoModal', telaPlacarImg);
+    this.load.image('gameoverFundo', telaGameoverImg);
+
+    // Pré-carrega a botões para o gameOver
+    this.load.image('botaoInicio.png', botaoInicioImg);
+    this.load.image('botaoReiniciar.png', botaoReiniciarImg);
+    this.load.image('botaoSalvar.png', botaoSalvarImg);
 
     // Pré-carrega a imagem do carro
     this.load.image('carroImg', carroImg);
