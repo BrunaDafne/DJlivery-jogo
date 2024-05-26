@@ -67,10 +67,12 @@ export class Fase extends Phaser.Scene {
   
     const placar = this.add.image((larguraTela / 2) - 85, 0, 'placarImg');
     placar.setOrigin(0);
+    placar.setDepth(10); // Ajuste a profundidade do placar
 
     // Cria e exibe o texto da pontuação
     this.textoPontuacao = this.add.text((larguraTela / 2) - 16, 18, `${this.pontuacao}`, { fontSize: '20px', color: '#000' });
     this.textoPontuacao.setOrigin(0.5, 0); // Define a origem do texto para centralizar horizontalmente
+    this.textoPontuacao.setDepth(11); // Ajuste a profundidade do texto da pontuação
 
     // Cria os coracoes do placar
     this.criarCoracoes();
@@ -488,6 +490,7 @@ private criarCoracoes(): void {
   const coracaoSpacing = 20; // Espaçamento entre os corações
   for (let i = 0; i < this.vidas; i++) {
     const coracao = this.add.image((this.sys.canvas.width / 2 + coracaoSpacing * i) + 40, 30, 'coracaoImg');
+    coracao.setDepth(11); // Ajuste a profundidade dos corações
     // Adicione a referência do coração ao array
     this.coracoes.push(coracao);
   }
@@ -557,5 +560,6 @@ private removerCoracoes(): void {
 
     // Cria uma instância do modal e passa a pontuação final
     const modal = new Modal(this, this.pontuacao, reiniciarFase);
+    modal.setDepth(20);
   }
 }
