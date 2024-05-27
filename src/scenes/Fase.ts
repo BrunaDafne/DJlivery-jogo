@@ -16,6 +16,10 @@ import maeImg from '@assets/telaFase/colisao/mae.png';
 
 import placarImg from '@assets/telaFase/placar.png';
 import coracaoImg from '@assets/telaFase/coracao.png';
+import musicaFundo from '@assets/musicas/fase.mp3';
+import musicaGameover from '@assets/musicas/gameover.mp3';
+import musicaPino from '@assets/musicas/entrega.mp3';
+import musicaCarro from '@assets/musicas/carro.mp3';
 
 import { Modal } from '@objects/Modal';
 
@@ -35,6 +39,10 @@ export class Fase extends Phaser.Scene {
   private elementos: Phaser.Physics.Arcade.Image[] = []; // Declaração da variável elementos de colisão
   private adicionandoElemento: boolean = false; // flag que ajuda não criar vários de uma vez 
   private posicoesX: number[] = [];
+  private musicaTemaFase: Phaser.Sound.BaseSound;
+  private musicaTemaGameover: Phaser.Sound.BaseSound;
+  private musicaPino: Phaser.Sound.BaseSound;
+  private musicaCarro: Phaser.Sound.BaseSound;
 
   private textoPontuacao!: Phaser.GameObjects.Text; // Texto da pontuação
   // Declare uma variável para armazenar as referências dos corações
@@ -48,6 +56,19 @@ export class Fase extends Phaser.Scene {
   init(): void {}
 
   create(): void {
+    // Adiciona a música de fundo
+    if (!this?.musicaTemaFase) {
+      this.musicaTemaFase = this.sound.add('fase', {
+        volume: 0.5,
+        loop: true
+      });
+      // Toca a música
+      this.musicaTemaFase.play();
+    } else {
+      if (!this?.musicaTemaFase?.isPlaying) {
+        this?.musicaTemaFase?.play();
+      }
+    }
     const {width, height} = this.scale;
     // adiciona o fundo
     this.bg = this.add.tileSprite(0,0, width, height, 'background').setScale(2);
@@ -154,6 +175,16 @@ export class Fase extends Phaser.Scene {
 
     // Pré-carrega a imagem do coracao que serao as vidas
     this.load.image('coracaoImg', coracaoImg);
+
+    // Pré-carrega a música de fundo
+    this.load.audio('fase', musicaFundo);
+
+    // Pré-carrega a música de gameover
+    this.load.audio('gameoverMusica', musicaGameover);
+
+    // Pré-carrega a música do Pino
+    this.load.audio('musicaPino', musicaPino);
+    this.load.audio('musicaCarro', musicaCarro);
   }
 
   update(): void {
@@ -311,6 +342,10 @@ export class Fase extends Phaser.Scene {
 
   // Função que faz a logica de colisão com o jogador
   private colisaoPino(jogador: Phaser.Physics.Arcade.Sprite, pino: Phaser.Physics.Arcade.Image): void {
+    this.musicaPino = this.sound.add('musicaPino', {
+      volume: 0.5,
+    });
+    this.musicaPino.play();
     pino.destroy(); // Remove o pino colidido
     this.pinos = this.pinos.filter(p => p !== pino); // Remove o pino do array de pinos
 
@@ -346,6 +381,7 @@ export class Fase extends Phaser.Scene {
   }
 
   private colisaoElemento(jogador: Phaser.Physics.Arcade.Sprite, elemento: Phaser.Physics.Arcade.Image): void {
+    console.log('nomeDoElemento', elemento?.texture?.key);
     elemento.setVelocity(0);
 
     // Desativa o corpo do elemento
@@ -434,6 +470,10 @@ export class Fase extends Phaser.Scene {
 
   // Colisão jogador e carro
   private colisaoCarro(jogador: Phaser.Physics.Arcade.Sprite, carro: Phaser.Physics.Arcade.Image): void {
+    this.musicaCarro = this.sound.add('musicaCarro', {
+      volume: 0.5,
+    });
+    this.musicaCarro.play();
     // Decrementa uma vida
     this.vidas--;
     this.atualizarPlacarVidas();
@@ -537,7 +577,39 @@ private removerCoracoes(): void {
 
   private mostrarModal(): void {
     // Função de callback para reiniciar a fase
+    const resetar = () => {
+      this.musicaTemaGameover.stop();
+      // Reinicia as variáveis de pontuação e vidas
+      this.pontuacao = 0;
+      this.vidas = 3;
+      this.textoPontuacao.setText(`${this.pontuacao}`);
+      this.criarCoracoes();
+
+      // Volta o jogador para o estado inicial quando reiniciar a fase
+      this.jogador.visible = true;
+      this.jogador.setPosition(this.sys.canvas.width / 2,  this.sys.canvas.height / 2);
+
+      // Remove todos os pinos restantes
+      this.pinos.forEach(pino => pino.destroy());
+      this.pinos = [];
+
+      // Remove todos os carros restantes
+      this.carros.forEach(carro => carro.destroy());
+      this.carros = [];
+
+      // Remove todos os elementos restantes
+      this.elementos.forEach(elemento => elemento.destroy());
+      this.elementos = [];
+
+      this.posicoesX = [0.13  * this.sys.canvas.width, 0.3  * this.sys.canvas.width, 0.73  * this.sys.canvas.width, 0.88  * this.sys.canvas.width];
+
+      // Fecha o modal
+      modal.destroy();
+    };
+
     const reiniciarFase = () => {
+      this.musicaTemaGameover.stop();
+      this.musicaTemaFase.play();
       // Reinicia as variáveis de pontuação e vidas
       this.pontuacao = 0;
       this.vidas = 3;
@@ -567,7 +639,14 @@ private removerCoracoes(): void {
     };
 
     // Cria uma instância do modal e passa a pontuação final
-    const modal = new Modal(this, this.pontuacao, reiniciarFase);
+    this?.musicaTemaFase?.stop();
+    this.musicaTemaGameover = this.sound.add('gameoverMusica', {
+      volume: 0.5,
+      loop: true
+    });
+    // Toca a música
+    this.musicaTemaGameover.play();
+    const modal = new Modal(this, this.pontuacao, resetar, reiniciarFase);
     modal.setDepth(20);
   }
 }

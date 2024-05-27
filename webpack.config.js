@@ -25,10 +25,13 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(png|jpe?g|svg)/i,
-        loader: 'file-loader',
-        options: {
-          name: 'assets/[name].[ext]',
+        test: /\.(png|jpe?g|svg|mp3|wav)$/i,
+        use: {
+          loader: 'file-loader',
+          options: {
+            name: 'assets/[name].[ext]',
+            outputPath: 'assets/musicas/',
+          },
         },
       },
       {

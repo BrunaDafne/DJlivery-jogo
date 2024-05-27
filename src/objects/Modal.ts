@@ -3,7 +3,7 @@ import { addScore } from "src/config/firebase";
 export class Modal extends Phaser.GameObjects.Container {
   private inputElement: HTMLInputElement;
 
-  constructor(scene: Phaser.Scene, pontuacao: number, reiniciarCallback: () => void) {
+  constructor(scene: Phaser.Scene, pontuacao: number, resetar: () => void, reiniciar: () => void) {
       super(scene);
 
       let larguraBotao = scene.sys.canvas.width / 2 - 85;
@@ -83,7 +83,7 @@ export class Modal extends Phaser.GameObjects.Container {
       botaoReiniciar.setInteractive();
       botaoReiniciar.on('pointerdown', () => {
         this.inputElement.remove();
-        reiniciarCallback();
+        reiniciar();
       });
       this.add(botaoReiniciar);
 
@@ -95,7 +95,7 @@ export class Modal extends Phaser.GameObjects.Container {
       botaoVoltar.setInteractive();
       botaoVoltar.on('pointerdown', () => {
         this.inputElement.remove();
-        reiniciarCallback();
+        resetar();
         scene.scene.start('TelaInicial');
       });
       this.add(botaoVoltar);

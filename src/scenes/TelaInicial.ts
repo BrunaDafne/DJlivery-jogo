@@ -2,15 +2,32 @@ import telaMenuImg from '@assets/telaInicial/telaMenu.png';
 import botaoIniciarImg from '@assets/telaInicial/botaoIniciar.png';
 import botaoTutorialImg from '@assets/telaInicial/botaoTutorial.png';
 import botaoPlacarImg from '@assets/telaInicial/botaoPlacar.png';
+import musicaFundo from '@assets/musicas/inicial.mp3';
 
 export class TelaInicial extends Phaser.Scene {
+  private musicaTema: Phaser.Sound.BaseSound;
   constructor() {
     super({ key: 'TelaInicial' });
   }
 
-  init(): void {}
+  init(): void {
+  }
 
   create(): void {
+    // Adiciona a música de fundo
+    if (!this?.musicaTema) {
+      this.musicaTema = this.sound.add('inicial', {
+        volume: 0.5,
+        loop: true
+      });
+      // Toca a música
+      this.musicaTema.play();
+    } else {
+      if (!this?.musicaTema?.isPlaying) {
+        this?.musicaTema?.play();
+      }
+    }
+
     const larguraTela = this.sys.canvas.width;
     const alturaTela = this.sys.canvas.height;
 
@@ -32,7 +49,10 @@ export class TelaInicial extends Phaser.Scene {
 
     alturaBotao = alturaBotao + 70;
     botaoIniciar.setInteractive();
-    botaoIniciar.on('pointerdown', () => this.scene.start('PreInicio'));
+    botaoIniciar.on('pointerdown', () => {
+      this.musicaTema.stop();
+      this.scene.start('PreInicio')
+    });
 
     // Adiciona a imagem do botão tutorial
     const botaoTutorial = this.add.image(larguraBotao, alturaBotao, 'botaoTutorial.png');
@@ -76,6 +96,9 @@ export class TelaInicial extends Phaser.Scene {
 
     // Pré-carrega a imagem botão placar
     this.load.image('botaoPlacar.png', botaoPlacarImg);
+
+    // Pré-carrega a música de fundo
+    this.load.audio('inicial', musicaFundo);
   }
 
   update(): void {

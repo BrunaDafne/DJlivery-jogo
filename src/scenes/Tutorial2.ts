@@ -1,5 +1,4 @@
 import telaTutorial2Img from '@assets/telaTutorial/telaTutorial2.png';
-import botaoInicioImg from '@assets/botoes/botaoInicio.png';
 import botaoVoltarImg from '@assets/botoes/botaoVoltar.png';
 
 export class Tutorial2 extends Phaser.Scene {
@@ -24,15 +23,7 @@ export class Tutorial2 extends Phaser.Scene {
     let larguraBotao = larguraTela / 2;
     let alturaBotao = alturaTela / 2 + 160;
 
-    const botaoInicio = this.add.image(larguraBotao + 40, alturaBotao, 'botaoInicio.png');
-    botaoInicio.setOrigin(0);
-    botaoInicio.displayWidth = 180;
-    botaoInicio.displayHeight = 45;
-
-    botaoInicio.setInteractive();
-    botaoInicio.on('pointerdown', () => this.scene.start('TelaInicial'));
-
-    const botaoVoltar = this.add.image(larguraBotao - 180, alturaBotao, 'botaoVoltar.png');
+    const botaoVoltar = this.add.image(larguraBotao - 70, alturaBotao, 'botaoVoltar.png');
     botaoVoltar.setOrigin(0);
     botaoVoltar.displayWidth = 180;
     botaoVoltar.displayHeight = 45;
@@ -55,9 +46,6 @@ export class Tutorial2 extends Phaser.Scene {
   preload(): void {
     // Pré-carrega a imagem de fundo
     this.load.image('telaTutorial2.png', telaTutorial2Img);
-
-    // Pré-carrega a imagem do botão inicio
-    this.load.image('botaoInicio.png', botaoInicioImg);
 
     // Pré-carrega a imagem do botão voltar
     this.load.image('botaoVoltar.png', botaoVoltarImg);
