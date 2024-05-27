@@ -20,6 +20,10 @@ import musicaFundo from '@assets/musicas/fase.mp3';
 import musicaGameover from '@assets/musicas/gameover.mp3';
 import musicaPino from '@assets/musicas/entrega.mp3';
 import musicaCarro from '@assets/musicas/carro.mp3';
+import somCrianca from '@assets/musicas/menino.mp3';
+import somIdoso from '@assets/musicas/idoso.mp3';
+import somCachorro from '@assets/musicas/cachorro.mp3';
+import somMulher from '@assets/musicas/mulher.mp3';
 
 import { Modal } from '@objects/Modal';
 
@@ -185,6 +189,10 @@ export class Fase extends Phaser.Scene {
     // Pré-carrega a música do Pino
     this.load.audio('musicaPino', musicaPino);
     this.load.audio('musicaCarro', musicaCarro);
+    this.load.audio('somCrianca', somCrianca);
+    this.load.audio('somCachorro', somCachorro);
+    this.load.audio('somIdoso', somIdoso);
+    this.load.audio('somMulher', somMulher);
   }
 
   update(): void {
@@ -381,7 +389,28 @@ export class Fase extends Phaser.Scene {
   }
 
   private colisaoElemento(jogador: Phaser.Physics.Arcade.Sprite, elemento: Phaser.Physics.Arcade.Image): void {
-    console.log('nomeDoElemento', elemento?.texture?.key);
+    if (elemento?.texture?.key === 'cachorroImg') {
+      const som = this.sound.add('somCachorro', {
+        volume: 0.5,
+      });
+      som.play();
+    } else if (elemento?.texture?.key === 'criancaImg') {
+      const som = this.sound.add('somCrianca', {
+        volume: 0.5,
+      });
+      som.play();
+    } else if (elemento?.texture?.key === 'maeImg') {
+      const som = this.sound.add('somMulher', {
+        volume: 0.3,
+      });
+      som.play();
+    } else {
+      const som = this.sound.add('somIdoso', {
+        volume: 0.5,
+      });
+      som.play();
+    }
+
     elemento.setVelocity(0);
 
     // Desativa o corpo do elemento
