@@ -95,6 +95,7 @@ export class Modal extends Phaser.GameObjects.Container {
       botaoVoltar.setInteractive();
       botaoVoltar.on('pointerdown', () => {
         this.inputElement.remove();
+        reiniciarCallback();
         scene.scene.start('TelaInicial');
       });
       this.add(botaoVoltar);
