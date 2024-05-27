@@ -1,10 +1,10 @@
-import telaTutorialImg from '@assets/telaTutorial/telaTutorial.png';
-import botaoVoltarImg from '@assets/botoes/botaoInicio.png';
-import botaoProximoImg from '@assets/botoes/botaoProximo.png';
+import telaTutorial2Img from '@assets/telaTutorial/telaTutorial2.png';
+import botaoInicioImg from '@assets/botoes/botaoInicio.png';
+import botaoVoltarImg from '@assets/botoes/botaoVoltar.png';
 
-export class Tutorial extends Phaser.Scene {
+export class Tutorial2 extends Phaser.Scene {
   constructor() {
-    super({ key: 'Tutorial' });
+    super({ key: 'Tutorial2' });
   }
 
   init(): void {}
@@ -13,7 +13,7 @@ export class Tutorial extends Phaser.Scene {
     const larguraTela = this.sys.canvas.width;
     const alturaTela = this.sys.canvas.height;
     // Adiciona a imagem de fundo que ocupa toda a tela
-    const backgroundImage = this.add.image(0, 0, 'telaTutorial.png');
+    const backgroundImage = this.add.image(0, 0, 'telaTutorial2.png');
     // Centraliza a imagem na tela
     backgroundImage.setOrigin(0);
 
@@ -21,24 +21,24 @@ export class Tutorial extends Phaser.Scene {
     backgroundImage.displayWidth = larguraTela;
     backgroundImage.displayHeight = alturaTela;
 
-    let larguraBotao = larguraTela / 2 - 180;
+    let larguraBotao = larguraTela / 2;
     let alturaBotao = alturaTela / 2 + 160;
 
-    const botaoVoltar = this.add.image(larguraBotao, alturaBotao, 'botaoVoltar.png');
+    const botaoInicio = this.add.image(larguraBotao + 40, alturaBotao, 'botaoInicio.png');
+    botaoInicio.setOrigin(0);
+    botaoInicio.displayWidth = 180;
+    botaoInicio.displayHeight = 45;
+
+    botaoInicio.setInteractive();
+    botaoInicio.on('pointerdown', () => this.scene.start('TelaInicial'));
+
+    const botaoVoltar = this.add.image(larguraBotao - 180, alturaBotao, 'botaoVoltar.png');
     botaoVoltar.setOrigin(0);
     botaoVoltar.displayWidth = 180;
     botaoVoltar.displayHeight = 45;
 
     botaoVoltar.setInteractive();
-    botaoVoltar.on('pointerdown', () => this.scene.start('TelaInicial'));
-
-    const botaoProximo = this.add.image(larguraBotao + 220, alturaBotao, 'botaoProximo.png');
-    botaoProximo.setOrigin(0);
-    botaoProximo.displayWidth = 180;
-    botaoProximo.displayHeight = 45;
-
-    botaoProximo.setInteractive();
-    botaoProximo.on('pointerdown', () => this.scene.start('Tutorial2'));
+    botaoVoltar.on('pointerdown', () => this.scene.start('Tutorial'));
 
     // Aplica estilos CSS para evitar rolagem e fixar a imagem de fundo
     const gameCanvas = document.querySelector('canvas');
@@ -54,13 +54,13 @@ export class Tutorial extends Phaser.Scene {
 
   preload(): void {
     // Pré-carrega a imagem de fundo
-    this.load.image('telaTutorial.png', telaTutorialImg);
+    this.load.image('telaTutorial2.png', telaTutorial2Img);
+
+    // Pré-carrega a imagem do botão inicio
+    this.load.image('botaoInicio.png', botaoInicioImg);
 
     // Pré-carrega a imagem do botão voltar
     this.load.image('botaoVoltar.png', botaoVoltarImg);
-
-    // Pré-carrega a imagem do botão proximo
-    this.load.image('botaoProximo.png', botaoProximoImg);
   }
 
   update(): void {}
