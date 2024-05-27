@@ -10,12 +10,10 @@ export class Placar extends Phaser.Scene {
   init(): void {}
 
   create(): void {
-    //console.log('process: ', process)
-    getScores().then((data: any) => {
-      console.log('deu certo');
-      console.log('valores: ', data);
+    getScores().then((data: Array<{nome: string; pontuacao: number;}>) => {
+      this.displayScores(data);
     }).catch((err: any) => {
-      console.log('DEU ERROR: ', err);
+      alert('Não foi possível buscar o placar');
     });
 
     const larguraTela = this.sys.canvas.width;
@@ -29,8 +27,8 @@ export class Placar extends Phaser.Scene {
     backgroundImage.displayWidth = larguraTela;
     backgroundImage.displayHeight = alturaTela;
 
-    let larguraBotao = larguraTela / 2 - 85;
-    let alturaBotao = alturaTela / 2 + 160;
+    let larguraBotao = larguraTela / 2 - 80;
+    let alturaBotao = alturaTela / 2 + 190;
 
     const botaoVoltar = this.add.image(larguraBotao, alturaBotao, 'botaoVoltar.png');
     botaoVoltar.setOrigin(0);
@@ -61,4 +59,28 @@ export class Placar extends Phaser.Scene {
   }
 
   update(): void {}
+
+  displayScores(data: Array<{nome: string; pontuacao: number;}>): void {
+    const startX = this.sys.canvas.width / 2 + 10;
+    let startY = 205; 
+
+    data.forEach((item: {nome: string; pontuacao: number;}, index: number) => {
+      const text = `${index + 1} - ${item.nome} - ${item.pontuacao}`;
+      this.add.text(startX, startY, text, 
+      { 
+        fontSize: '18px', 
+        color: '#000',
+        fontStyle: 'bold',
+        shadow: {
+          offsetX: 2,
+          offsetY: 2,
+          color: '#fcb506',
+          blur: 2,
+          stroke: true,
+          fill: true
+      }}
+    ).setOrigin(0.5, 0);
+      startY += 30; 
+    });
+  }
 }
