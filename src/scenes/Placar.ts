@@ -10,14 +10,9 @@ export class Placar extends Phaser.Scene {
   init(): void {}
 
   create(): void {
-    getScores().then((data: Array<{nome: string; pontuacao: number;}>) => {
-      this.displayScores(data);
-    }).catch((err: any) => {
-      alert('Não foi possível buscar o placar');
-    });
-
     const larguraTela = this.sys.canvas.width;
     const alturaTela = this.sys.canvas.height;
+
     // Adiciona a imagem de fundo que ocupa toda a tela
     const backgroundImage = this.add.image(0, 0, 'telaPlacar.png');
     // Centraliza a imagem na tela
@@ -48,6 +43,28 @@ export class Placar extends Phaser.Scene {
     gameCanvas.style.left = '0';
     gameCanvas.style.overflow = 'hidden';
   
+    const loadingText = this.add.text(this.sys.canvas.width / 2 + 10, 220, 'Carregando...', {
+      fontSize: '18px',
+      color: '#000',
+      fontStyle: 'bold',
+      shadow: {
+        offsetX: 2,
+        offsetY: 2,
+        color: '#fcb506',
+        blur: 2,
+        stroke: true,
+        fill: true
+    }
+    }).setOrigin(0.5, 0.5);
+
+    getScores().then((data: Array<{nome: string; pontuacao: number;}>) => {
+      this.displayScores(data);
+    }).catch((err: any) => {
+      alert('Não foi possível buscar o placar');
+      loadingText.setText('Não foi possível buscar os dados');
+    }).finally(() => {
+      loadingText.destroy();
+    });
   }
 
   preload(): void {
