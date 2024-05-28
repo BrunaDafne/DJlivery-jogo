@@ -1,6 +1,7 @@
 import telaPreInicioImg from '@assets/telaPreInicio/telaPreInicio.png';
 import botaoComecarImg from '@assets/telaPreInicio/botaoComecar.png';
 import botaoVoltarImg from '@assets/botoes/botaoVoltar.png';
+import musicaIniciarFase from '@assets/musicas/startFase.mp3';
 
 export class PreInicio extends Phaser.Scene {
   constructor() {
@@ -10,6 +11,13 @@ export class PreInicio extends Phaser.Scene {
   init(): void {}
 
   create(): void {
+    const musicaFundo = this.sound.add('musicaFase', {
+      volume: 0.5,
+      loop: true
+    });
+    // Toca a música
+    musicaFundo.play();
+  
     const larguraTela = this.sys.canvas.width;
     const alturaTela = this.sys.canvas.height;
     // Adiciona a imagem de fundo que ocupa toda a tela
@@ -30,7 +38,10 @@ export class PreInicio extends Phaser.Scene {
     botaoComecar.displayHeight = 45;
 
     botaoComecar.setInteractive();
-    botaoComecar.on('pointerdown', () => this.scene.start('Fase'));
+    botaoComecar.on('pointerdown', () => {
+      musicaFundo.stop();
+      this.scene.start('Fase')
+    });
 
     const botaoVoltar = this.add.image(posicaoXBotao - 170, posicaoYBotao, 'botaoVoltar.png');
     botaoVoltar.setOrigin(0);
@@ -61,6 +72,9 @@ export class PreInicio extends Phaser.Scene {
 
     // Pré-carrega a imagem do botão voltar
     this.load.image('botaoVoltar.png', botaoVoltarImg);
+
+    // Pré-carrega a música de fundo
+    this.load.audio('musicaFase', musicaIniciarFase);
   }
 
   update(): void {}
