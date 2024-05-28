@@ -48,11 +48,21 @@ export class Modal extends Phaser.GameObjects.Container {
       botaoSalvar.on('pointerdown', () => {
           const playerName = this.inputElement.value.trim();
           if (playerName) {
-            addScore(playerName, pontuacao);
-            this.inputElement.remove();
-
-            botaoSalvar.setVisible(false);
-            botaoSalvar.disableInteractive();
+            const salvando = scene.add.text(scene.sys.canvas.width / 2 + 30, scene.sys.canvas.height / 2 + 45, 'Salvando...', { 
+              fontSize: '20px', 
+              color: '#000',
+              fontStyle: 'bold',
+              shadow: {
+                offsetX: 2,
+                offsetY: 2,
+                color: '#fcb506',
+                blur: 2,
+                stroke: true,
+                fill: true
+            }
+            });
+            salvando.setOrigin(0.5);
+            this.add(salvando);
 
             const sucesso = scene.add.text(scene.sys.canvas.width / 2 + 30, scene.sys.canvas.height / 2 + 45, 'Sua pontuação foi salva!', { 
               fontSize: '20px', 
@@ -68,7 +78,21 @@ export class Modal extends Phaser.GameObjects.Container {
             }
             });
             sucesso.setOrigin(0.5);
-            this.add(sucesso);
+
+            addScore(playerName, pontuacao).
+            then((res) => {
+              salvando?.destroy();
+              if (res) {
+                this.add(sucesso);
+              }
+            }).
+            finally(() => {
+              salvando?.destroy();
+            });
+            this.inputElement.remove();
+
+            botaoSalvar.setVisible(false);
+            botaoSalvar.disableInteractive();
           } else {
             alert('Por favor, digite seu nome para salvar sua pontuação.');
           }

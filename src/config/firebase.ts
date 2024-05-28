@@ -31,11 +31,13 @@ export async function getScores() {
 }
 
 // Função para adicionar valores à coleção 'placar'
-export async function addScore(name: any, score: any) {
+export async function addScore(name: string, score: number) {
     try {
       await addDoc(collection(db, 'placar'), { nome: name, pontuacao: score });
+      return true;
     } catch (error) {
       alert('Ocorreu um erro ao salvar sua pontuação.');
+      return false;
     }
   }
 

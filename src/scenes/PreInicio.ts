@@ -39,7 +39,7 @@ export class PreInicio extends Phaser.Scene {
 
     botaoComecar.setInteractive();
     botaoComecar.on('pointerdown', () => {
-      musicaFundo.stop();
+      musicaFundo?.stop();
       this.scene.start('Fase')
     });
 
@@ -49,7 +49,10 @@ export class PreInicio extends Phaser.Scene {
     botaoVoltar.displayHeight = 45;
 
     botaoVoltar.setInteractive();
-    botaoVoltar.on('pointerdown', () => this.scene.start('TelaInicial'));
+    botaoVoltar.on('pointerdown', () => {
+      musicaFundo?.stop();
+      this.scene.start('TelaInicial');
+    });
 
     // Aplica estilos CSS para evitar rolagem e fixar a imagem de fundo
     const gameCanvas = document.querySelector('canvas');
