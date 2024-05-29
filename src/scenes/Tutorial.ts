@@ -1,5 +1,5 @@
 import telaTutorialImg from '@assets/telaTutorial/telaTutorial.png';
-import botaoVoltarImg from '@assets/botoes/botaoInicio.png';
+import botaoVoltarImg from '@assets/botoes/botaoVoltar.png';
 import botaoProximoImg from '@assets/botoes/botaoProximo.png';
 
 export class Tutorial extends Phaser.Scene {

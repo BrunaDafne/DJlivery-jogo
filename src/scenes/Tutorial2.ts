@@ -23,7 +23,7 @@ export class Tutorial2 extends Phaser.Scene {
     let larguraBotao = larguraTela / 2;
     let alturaBotao = alturaTela / 2 + 160;
 
-    const botaoVoltar = this.add.image(larguraBotao - 70, alturaBotao, 'botaoVoltar.png');
+    const botaoVoltar = this.add.image(larguraBotao - 70, alturaBotao, 'botaoVoltar');
     botaoVoltar.setOrigin(0);
     botaoVoltar.displayWidth = 180;
     botaoVoltar.displayHeight = 45;
@@ -48,7 +48,7 @@ export class Tutorial2 extends Phaser.Scene {
     this.load.image('telaTutorial2.png', telaTutorial2Img);
 
     // Pré-carrega a imagem do botão voltar
-    this.load.image('botaoVoltar.png', botaoVoltarImg);
+    this.load.image('botaoVoltar', botaoVoltarImg);
   }
 
   update(): void {}
