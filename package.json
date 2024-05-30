@@ -1,7 +1,7 @@
 {
-  "name": "phaser-typescript-skeleton",
+  "name": "djlivery",
   "version": "1.0.0",
-  "description": "A simple skeleton to help quickly bootstraping Phaser games with TypeScript.",
+  "description": "jogo djlivery para estágio 1",
   "main": "src/game.ts",
   "license": "GPL-3.0",
   "keywords": [
@@ -16,7 +16,7 @@
     "dev": "webpack --mode development && webpack serve --mode development",
     "format": "prettier --write --config .prettierrc *.js src/**/*.ts src/*.ts"
   },
-  "author": "Níckolas Da Silva <nickolas@phpsp.org.br>",
+  "author": "Bruna Dafne",
   "engines": {
     "node": "^16.19.0"
   },
