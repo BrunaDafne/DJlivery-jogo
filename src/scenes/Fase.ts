@@ -24,6 +24,7 @@ import somCrianca from '@assets/musicas/menino.mp3';
 import somIdoso from '@assets/musicas/idoso.mp3';
 import somCachorro from '@assets/musicas/cachorro.mp3';
 import somMulher from '@assets/musicas/mulher.mp3';
+import somBicicleta from '@assets/musicas/bicicleta.mp3';
 
 import { Modal } from '@objects/Modal';
 
@@ -47,6 +48,7 @@ export class Fase extends Phaser.Scene {
   private musicaTemaGameover: Phaser.Sound.BaseSound;
   private musicaPino: Phaser.Sound.BaseSound;
   private musicaCarro: Phaser.Sound.BaseSound;
+  private musicaBicicleta: Phaser.Sound.BaseSound;
 
   private textoPontuacao!: Phaser.GameObjects.Text; // Texto da pontuação
   // Declare uma variável para armazenar as referências dos corações
@@ -193,6 +195,7 @@ export class Fase extends Phaser.Scene {
     this.load.audio('somCachorro', somCachorro);
     this.load.audio('somIdoso', somIdoso);
     this.load.audio('somMulher', somMulher);
+    this.load.audio('somBicicleta', somBicicleta);
   }
 
   update(): void {
@@ -350,6 +353,10 @@ export class Fase extends Phaser.Scene {
 
   // Função que faz a logica de colisão com o jogador
   private colisaoPino(jogador: Phaser.Physics.Arcade.Sprite, pino: Phaser.Physics.Arcade.Image): void {
+    this.musicaBicicleta = this.sound.add('somBicicleta', {
+      volume: 1,
+    });
+    this.musicaBicicleta.play();
     this.musicaPino = this.sound.add('musicaPino', {
       volume: 0.5,
     });
@@ -389,6 +396,11 @@ export class Fase extends Phaser.Scene {
   }
 
   private colisaoElemento(jogador: Phaser.Physics.Arcade.Sprite, elemento: Phaser.Physics.Arcade.Image): void {
+    this.musicaBicicleta = this.sound.add('somBicicleta', {
+      volume: 1,
+    });
+    this.musicaBicicleta.play();
+
     if (elemento?.texture?.key === 'cachorroImg') {
       const som = this.sound.add('somCachorro', {
         volume: 0.5,
@@ -503,6 +515,12 @@ export class Fase extends Phaser.Scene {
       volume: 0.5,
     });
     this.musicaCarro.play();
+
+    this.musicaBicicleta = this.sound.add('somBicicleta', {
+      volume: 1,
+    });
+    this.musicaBicicleta.play();
+
     // Decrementa uma vida
     this.vidas--;
     this.atualizarPlacarVidas();

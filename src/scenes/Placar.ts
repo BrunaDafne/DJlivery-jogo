@@ -79,7 +79,7 @@ export class Placar extends Phaser.Scene {
 
   displayScores(data: Array<{nome: string; pontuacao: number;}>): void {
     const startX = this.sys.canvas.width / 2 + 10;
-    let startY = 205; 
+    let startY = 202; 
 
     data.forEach((item: {nome: string; pontuacao: number;}, index: number) => {
       const text = `${index + 1} - ${item.nome} - ${item.pontuacao}`;
