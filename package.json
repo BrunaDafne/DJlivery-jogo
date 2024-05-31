@@ -18,7 +18,7 @@
   },
   "author": "Bruna Dafne",
   "engines": {
-    "node": "^16.19.0"
+    "node": "^20.12.2"
   },
   "dependencies": {
     "@babel/core": "^7.24.5",
