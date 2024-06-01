@@ -138,8 +138,8 @@ export class Modal extends Phaser.GameObjects.Container {
     this.inputElement.style.height = '15px';
     this.inputElement.style.borderWidth = '3px';
     this.inputElement.style.padding = '10px';
-    this.inputElement.style.top = `${scene.sys.canvas.height / 2 + 30}px`;
-    this.inputElement.style.left = `${scene.sys.canvas.width / 2 - 180}px`;
+    this.inputElement.style.top = `${scene.sys.canvas.height * 0.55}px`;
+    this.inputElement.style.left = `${scene.sys.canvas.width * 0.35}px`;
     this.inputElement.style.boxShadow = '0px 8px 8px #fcb506';
 
     document.body.appendChild(this.inputElement);
