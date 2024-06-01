@@ -39,7 +39,7 @@ export class Modal extends Phaser.GameObjects.Container {
       // Create input field
       this.createInput(scene);
 
-      const botaoSalvar = scene.add.image(larguraBotao + 25, alturaBotao - 70, 'botaoSalvar.png');
+      const botaoSalvar = scene.add.image(larguraBotao + 25, alturaBotao - 60, 'botaoSalvar.png');
       botaoSalvar.setOrigin(0);
       botaoSalvar.displayWidth = 180;
       botaoSalvar.displayHeight = 45;
@@ -99,7 +99,7 @@ export class Modal extends Phaser.GameObjects.Container {
       });
       this.add(botaoSalvar);
 
-      const botaoReiniciar = scene.add.image(larguraBotao + 140, alturaBotao - 10, 'botaoReiniciar.png');
+      const botaoReiniciar = scene.add.image(larguraBotao + 140, alturaBotao, 'botaoReiniciar.png');
       botaoReiniciar.setOrigin(0);
       botaoReiniciar.displayWidth = 180;
       botaoReiniciar.displayHeight = 45;
@@ -111,7 +111,7 @@ export class Modal extends Phaser.GameObjects.Container {
       });
       this.add(botaoReiniciar);
 
-      const botaoVoltar = scene.add.image(larguraBotao - 90, alturaBotao -10, 'botaoInicio.png');
+      const botaoVoltar = scene.add.image(larguraBotao - 90, alturaBotao, 'botaoInicio.png');
       botaoVoltar.setOrigin(0);
       botaoVoltar.displayWidth = 180;
       botaoVoltar.displayHeight = 45;
@@ -134,12 +134,12 @@ export class Modal extends Phaser.GameObjects.Container {
     this.inputElement.placeholder = 'Digite seu nome';
     this.inputElement.maxLength = 10;
     this.inputElement.style.position = 'absolute';
-    this.inputElement.style.width = '400px';
+    this.inputElement.style.width = '180px';
     this.inputElement.style.height = '15px';
     this.inputElement.style.borderWidth = '3px';
     this.inputElement.style.padding = '10px';
-    this.inputElement.style.top = `${scene.sys.canvas.height * 0.55}px`;
-    this.inputElement.style.left = `${scene.sys.canvas.width * 0.35}px`;
+    this.inputElement.style.top = `${scene.sys.canvas.height * 0.54}px`;
+    this.inputElement.style.left = `${scene.sys.canvas.width / 2 - 75}px`;
     this.inputElement.style.boxShadow = '0px 8px 8px #fcb506';
 
     document.body.appendChild(this.inputElement);
