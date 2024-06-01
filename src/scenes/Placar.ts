@@ -23,7 +23,7 @@ export class Placar extends Phaser.Scene {
     backgroundImage.displayHeight = alturaTela;
 
     let larguraBotao = larguraTela / 2 - 80;
-    let alturaBotao = alturaTela / 2 + 190;
+    let alturaBotao = alturaTela / 2 + 200;
 
     const botaoVoltar = this.add.image(larguraBotao, alturaBotao, 'botaoVoltar.png');
     botaoVoltar.setOrigin(0);
@@ -79,7 +79,7 @@ export class Placar extends Phaser.Scene {
 
   displayScores(data: Array<{nome: string; pontuacao: number;}>): void {
     const startX = this.sys.canvas.width / 2 + 10;
-    let startY = 202; 
+    let startY = this.sys.canvas.height * 0.32; 
 
     data.forEach((item: {nome: string; pontuacao: number;}, index: number) => {
       const text = `${index + 1} - ${item.nome} - ${item.pontuacao}`;
