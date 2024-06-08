@@ -75,9 +75,30 @@ export class Fase extends Phaser.Scene {
         this?.musicaTemaFase?.play();
       }
     }
-    const {width, height} = this.scale;
-    // adiciona o fundo
-    this.bg = this.add.tileSprite(0,0, width, height, 'background').setScale(2);
+
+    const { width, height } = this.scale;
+
+    // Adiciona o fundo como um TileSprite
+    this.bg = this.add.tileSprite(0, 0, 646, 265, 'background');
+
+    // Calcula a escala necessária para ajustar a largura da tela
+    const scaleX = width / 646;
+    const scaleY = height / 265;
+    const scale = Math.max(scaleX, scaleY);
+
+    // Ajusta a escala do TileSprite para cobrir a tela inteira
+    this.bg.setScale(scale);
+
+    // Reposiciona o TileSprite para garantir que ele esteja centralizado
+    this.bg.setPosition(width / 2, height / 2);
+
+    // Centraliza o ponto de origem da imagem
+    this.bg.setOrigin(0.5, 0.5);
+
+    // Atualiza o tamanho do TileSprite para garantir que ele cubra a tela inteira
+    this.bg.displayWidth = width;
+    this.bg.displayHeight = height;
+
     const larguraTela = this.sys.canvas.width;
     const alturaTela = this.sys.canvas.height;
     this.posicoesX = [0.13  * this.sys.canvas.width, 0.3  * this.sys.canvas.width, 0.73  * this.sys.canvas.width, 0.88  * this.sys.canvas.width];
