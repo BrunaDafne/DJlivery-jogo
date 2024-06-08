@@ -1,3 +1,5 @@
+![alt text](image-7.png)
+
 # DJlivery-jogo
 
 DJlivery é um jovem que a noite é DJ e pelas manhã trabalha entregando delivery em sua bike. Ajude DJlivery nas suas entregas desviando os obstáculos!
