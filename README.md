@@ -2,11 +2,11 @@
 
 DJlivery é um jovem que a noite é DJ e pelas manhã trabalha entregando delivery em sua bike. Ajude DJlivery nas suas entregas desviando os obstáculos!
 
-* Link do jogo:
+* Link do jogo: https://djlivery-jogo.vercel.app/
 
 ## Motivação
 
-A motivação é criar um jogo que seja fácil, divertido, competitivo e curto para a disciplina de estágio 1. Além disso, aprimorar e explorar o desenvolvimento da área de jogos, como dinâmicas e conceitos.
+A motivação é criar um jogo que seja fácil, divertido, acessível, competitivo e curto para a disciplina de estágio 1. Além disso, aprimorar e explorar o desenvolvimento da área de jogos, como dinâmicas e conceitos.
 
 ## Objetivo
 
@@ -22,49 +22,55 @@ Nessa fase inicial, o jogo terá apenas uma fase corrida de sobrevivência, apes
 
 Apesar disso, a fase corrida possui 3 ciclos basicamente: 
 
-1 - O personagem fica no centro da tela na bicicleta correndo e os obstáculos dinâmicos vão até ele, como um cachorro, um carro que vem por baixo ou um senhora com carrinho de bebê ou um idoso passa na frente vem por baixo. Dura 30 segundos.
+1 - O personagem inicia no centro da tela e precisa se mover para os lados para buscar os primeiros pontos. Nessa fase do ínicio, não aparecem obstáculos.
 
-2 - Depois disso, o personagem se mexe em uma área quadricular delimitada invisível e o jogador terá que clicar nos obstáculos fixos para desviar como  gato, carrinho de comida ou um cone. Dura 30 segundos. Após ele dar a volta, ele retorna para o centro da tela.
+2 - Apartir do 3 ponto de entrega, aparecem na pista da fase os primeiros obstáculos, dessa forma, aumentando a dificuldade do jogo, os carros. Na pista começam a aparecer os veículos subindo na vertical e se o personagem colidir com os mesmos, perde uma vida.
 
-3 - Além disso, após voltar ao centro da tela, aparece 3 sequências na tela, uma por vez, para ele clicar em ordem, poderia ser feita uma bônus no final valendo mais pontos. Toda vez que ele acertar, ele faz uma manobra na tela. Se ele errar ou o tempo passar, a correia da bicicleta solta, ele cai e perde. Após isso, se o jogador passar, ele volta para a primeira dinãmica.
+3 - Apartir do 8 ponto de entrega, aparecem os demais obstáculos: os pedestres. A dinâmica funciona semelhante aos carros, quando ocorre a colisão o jogador perde uma vida. Porém os mesmos aparecem de cima para baixo caminhando.
 
 ## Esquema de Pontuação
 
-O jogo possuirá basicamente dois sistemas de pontuação:
-
-  1 - Por mob acertado: 
-    A ideia que o personagem principal fique centrado ou se mexendo e os obstáculos que aparecerem sejam retirados quando o jogador clica antes de acertar o DJlivery, dessa maneira, cada obstáculo vai somar uma quantidade de pontos: 
-    
-      - Exemplo de pontuação (Ideia inicial): 
-      
-        - Obstáculos dinâmicos (vão em direção ao personagem): 
-           - Cachorro: 20 pontos;
-           - Mulher com carinho de bebê: 10 pontos;
-           - Idoso: 10 pontos;
-           - Carros: 30 pontos;
-        - Obstáculos fixos (personagem vai em direção):
-           - Gato: 10 pontos;
-           - Cone: 10 pontos;
-           - Carrinho de comida: 10 pontos;
-           
-   2 - Por sequência digitada: 
-        A ideia é quando passar X tempo vai aparecer 3 sequências (A, W, S e D) para ele clicar, valendo 50 pontos, inicialmente com o tempo de 10 segundos em cada e quanto mais dificil for ficando diminuindo: 10 segundos, 8 segundos, 5 segundos e 3 segundos. Pode ser feito também uma extra se der tempo, valendo 100 pontos (se der tempo de fazer).
+Cada ponto de entrega colidido, ou seja, entregue, o mesmo ganha um ponto até acabar todas as vidas. O objetivo é conseguir o máximo de pontos até as vidas acabarem, o mesmo perde vida caso colida com algum veículo, pedestre ou deixe o ponto de entrega passar.
 
 ## Requisitos
 
 Épicos/Funcionalidades:
-  - Módulo 1: Fazer ele fixar fixo na tela e ir aparecendo os obstáculos iniciais como cachorro, carro, idoso e carrinho;
-  - Módulo 2: Fazer ele se mover de forma circular e voltar para o ponto inicial, e nesse raio aparecer certos obstáculos;
-  - Módulo 3: Aparecer uma sequência para ele clicar e ele fazer uma manobra;
+  - Módulo 1: Fazer a lógica inicial de movimentação do personagem;
+  - Módulo 2: Fazer o fundo e a movimentação;
+  - Módulo 3: Fazer os pontos de entrega;
+  - Módulo 4: Fazer a lógica de pontuação;
+  - Módulo 5: Fazer os veículos: movimentação e lógica de colisão;
+  - Módulo 6: Fazer os pedestres: movimentação e lógica de colisão;
+  - Módulo 7: Fazer as telas de tutorial, placar e gameover;
+  - Módulo 8: Fazer os demais designs;
+  - Módulo 9: Adicionar a trilha sonora;
 
 Personagens
-  - DJlivery - personagem principal que está fazendo suas entregas e precisa ser protegido;
-  - Obstáculos: Gato, cachorro, idoso, mulher com carrinho de bebê, carro e etc;
+  - DJlivery - personagem principal que está fazendo suas entregas;
+  - Obstáculos: cachorro, idoso, mulher com carrinho de bebê, carro e criança;
 
 ## Protótipos de Tela
 
-DIAGRAMA COM O PROTOTIPO DO JOGO
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
+![alt text](image-4.png)
+![alt text](image-5.png)
+![alt text](image-6.png)
 
 ## Tecnologias e Ferramentas utilizadas
 
-- Phaser;
+- Typescript, HTML e CSS - Estrutura do jogo;
+- Phaser - Game engine;
+- Firestore Database - Serviço do firebase utilizado para armazenar as pontuações;
+- Vercel - Plataforma de hospedagem;
+- Figma - Editor gráfico para criar o protótipo das telas;
+- Copilot Design - I.A utilizada para a criação das imagens do jogo;
+- Premium Beat - Site utilizado para buscar as músicas para o jogo: 
+  Great Player - Ricky Bambino
+	Play the Game - MusicaIman
+	Lets play the game - Diverse Music
+	Brick Smasher - Peter McIssac Music
+- Pixebay - Site onde retirei os efeitos sonoros;
+- Template utilizado - https://github.com/nawarian/phaser-ts-skeleton/
